@@ -8,6 +8,11 @@ section {
   border-radius: 12px;
 }
 
+section:nth-child(3) {
+  height: 500px;
+  overflow: scroll;
+}
+
 button {
   font: inherit;
   cursor: pointer;

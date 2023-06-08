@@ -61,6 +61,8 @@ function App() {
 
   async function addMovieHandler(movie) {
     try {
+      setError(null);
+
       const res = await fetch(
         "https://react-http-cd376-default-rtdb.firebaseio.com/movies.json",
         {
@@ -72,11 +74,15 @@ function App() {
         }
       );
 
+      if (!res.ok) {
+        throw new Error("Error Form Fetch POST...");
+      }
+
       const data = await res.json();
       console.log(`AddMovieHandler POST Response Data : ${data}`);
       setAddMovie(data);
     } catch (err) {
-      console.log(`Error : ${err}`);
+      setError(err.message);
     }
   }
 
