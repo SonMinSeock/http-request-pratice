@@ -8,6 +8,7 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [addMovie, setAddMovie] = useState({});
 
   const fetchMovieHandler = useCallback(async () => {
     try {
@@ -25,16 +26,13 @@ function App() {
 
       const data = await res.json();
 
-      const transformMovies = data.results.map((movie) => {
-        return {
-          id: movie.episode_id,
-          title: movie.title,
-          openingText: movie.opening_crawl,
-          releaseDate: movie.release_date,
-        };
-      });
+      const loadedMovies = [];
 
-      setMovies(transformMovies);
+      for (const key in data) {
+        loadedMovies.push({ id: key, ...data[key] });
+      }
+
+      setMovies(loadedMovies);
 
       setIsLoading(false);
     } catch (err) {
@@ -45,7 +43,7 @@ function App() {
 
   useEffect(() => {
     fetchMovieHandler();
-  }, [fetchMovieHandler]);
+  }, [fetchMovieHandler, addMovie]);
 
   let content = <p>Found No Movies.</p>;
 
@@ -61,8 +59,25 @@ function App() {
     content = <p>Loadding...</p>;
   }
 
-  function addMovieHandler(movie) {
-    console.log(movie);
+  async function addMovieHandler(movie) {
+    try {
+      const res = await fetch(
+        "https://react-http-cd376-default-rtdb.firebaseio.com/movies.json",
+        {
+          method: "POST",
+          body: JSON.stringify(movie),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await res.json();
+      console.log(`AddMovieHandler POST Response Data : ${data}`);
+      setAddMovie(data);
+    } catch (err) {
+      console.log(`Error : ${err}`);
+    }
   }
 
   return (
