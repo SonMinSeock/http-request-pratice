@@ -16,13 +16,17 @@ function App() {
 
       setError(null);
 
+      const starwarsRes = await fetch(`https://swapi.dev/api/films`);
+
       const res = await fetch(
-        "https://react-http-cd376-default-rtdb.firebaseio.com/movies.json"
+        `https://react-http-cd376-default-rtdb.firebaseio.com/movies.json`
       );
 
       if (!res.ok) {
         throw new Error("Something Worng!");
       }
+
+      const starwarsData = await starwarsRes.json();
 
       const data = await res.json();
 
@@ -31,6 +35,16 @@ function App() {
       for (const key in data) {
         loadedMovies.push({ id: key, ...data[key] });
       }
+
+      starwarsData.results.forEach((movie) => {
+        const data = {
+          id: movie.episode_id,
+          title: movie.title,
+          releaseDate: movie.release_date,
+          openingText: movie.opening_crawl,
+        };
+        loadedMovies.push(data);
+      });
 
       setMovies(loadedMovies);
 
