@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 import MoviesList from "./components/MoviesList";
+import AddMovie from "./components/AddMovie";
 import "./App.css";
 
 function App() {
@@ -14,7 +15,9 @@ function App() {
 
       setError(null);
 
-      const res = await fetch("https://swapi.dev/api/films");
+      const res = await fetch(
+        "https://react-http-cd376-default-rtdb.firebaseio.com/movies.json"
+      );
 
       if (!res.ok) {
         throw new Error("Something Worng!");
@@ -58,8 +61,15 @@ function App() {
     content = <p>Loadding...</p>;
   }
 
+  function addMovieHandler(movie) {
+    console.log(movie);
+  }
+
   return (
     <React.Fragment>
+      <section>
+        <AddMovie onAddMovie={addMovieHandler} />
+      </section>
       <section>
         <button onClick={fetchMovieHandler}>Fetch Movies</button>
       </section>
